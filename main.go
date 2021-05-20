@@ -13,36 +13,36 @@ type publicIPAddr struct {
 	PublicIP string `json:"public_ip"`
 }
 
+func WhatIsMyIP() string {
 
-func WhatIsMyIP()  {
-	resp, err := http.Get("http://localhost:8080/")
+	var myIP publicIPAddr
+	resp, err := http.Get("https://whatismyipapi.herokuapp.com/")
+
 	if err != nil{
 		fmt.Println("Something Went Wrong!!", err)
 	}else {
 		body, err := ioutil.ReadAll(resp.Body)
+
 		if err != nil{
 			log.Fatal(err)
 		}else {
 			textBytes := []byte(body)
-			myip := publicIPAddr{}
-			err := json.Unmarshal(textBytes, &myip)
+			myIP = publicIPAddr{}
+			err := json.Unmarshal(textBytes, &myIP)
 			if err != nil {
-				fmt.Println(err)
-				return
+				log.Fatal(err)
 			}
-			fmt.Println(myip.PublicIP)
-
-			//bytes := []byte(body)
-			//var IP publicIPAddr
-			//mmm := json.Unmarshal(bytes, &IP)
-			//fmt.Println(mmm)
 		}
 	}
+	return myIP.PublicIP
 }
 
 func main()  {
-	s := spinner.StartNew("Waiting for server response...")
-	s.SetCharset([]string{"🌑 ", "🌒 ", "🌓 ", "🌔 ", "🌕 ", "🌖 ", "🌗 ", "🌘 "})
-	WhatIsMyIP()
-	s.Stop()
+	spinner := spinner.StartNew("Waiting for server response...")
+	spinner.SetCharset([]string{"🌑 ", "🌒 ", "🌓 ", "🌔 ", "🌕 ", "🌖 ", "🌗 ", "🌘 "})
+
+	myIP := WhatIsMyIP()
+	fmt.Printf("\nYour public IP address is: %s\n", myIP)
+
+	spinner.Stop()
 }
