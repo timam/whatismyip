@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/janeczku/go-spinner"
 	"io/ioutil"
@@ -8,8 +9,13 @@ import (
 	"net/http"
 )
 
+type publicIPAddr struct {
+	PublicIP string `json:"public_ip"`
+}
+
+
 func WhatIsMyIP()  {
-	resp, err := http.Get("https://whatismyipapi.herokuapp.com/")
+	resp, err := http.Get("http://localhost:8080/")
 	if err != nil{
 		fmt.Println("Something Went Wrong!!", err)
 	}else {
@@ -17,8 +23,19 @@ func WhatIsMyIP()  {
 		if err != nil{
 			log.Fatal(err)
 		}else {
-			bodyString := string(body)
-			fmt.Println("\nYour public IP address is:", bodyString)
+			textBytes := []byte(body)
+			myip := publicIPAddr{}
+			err := json.Unmarshal(textBytes, &myip)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			fmt.Println(myip.PublicIP)
+
+			//bytes := []byte(body)
+			//var IP publicIPAddr
+			//mmm := json.Unmarshal(bytes, &IP)
+			//fmt.Println(mmm)
 		}
 	}
 }
