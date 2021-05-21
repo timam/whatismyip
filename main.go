@@ -16,7 +16,7 @@ type publicIPAddr struct {
 func WhatIsMyIP() string {
 
 	var myIP publicIPAddr
-	resp, err := http.Get("https://whatismyipapi.herokuapp.com/")
+	resp, err := http.Get("https://whatismyip-api.herokuapp.com/")
 
 	if err != nil{
 		fmt.Println("Something Went Wrong!!", err)
